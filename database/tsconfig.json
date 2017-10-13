@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "outDir": "build",
+        "lib": [
+            "es6",
+            "es7",
+            "dom"
+        ]
+    },
+    "include": [
+        "./migrations",
+        "./seeders"
+    ],
+    "exclude": [
+        "./node_modules"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "restartable": "rs",
+    "ignore": [
+        ".git",
+        "node_modules/**/node_modules"
+    ],
+    "verbose": true,
+    "execMap": {
+        "js": "node --harmony",
+        "ts": "ts-node"
+    },
+    "events": {
+        "restart": "cls"
+    },
+    "watch": [
+        "webpack/"
+    ],
+    "env": {
+       "NODE_ENV": "development"
+    },
+    "ext": "ts tsx js json"
+}

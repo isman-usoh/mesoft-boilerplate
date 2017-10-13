@@ -1,0 +1,26 @@
+{
+    "swagger": {
+        "outputDirectory": "./build",
+        "entryFile": "./src/server/apis/entry.ts",
+        "host": "localhost:3000",
+        "basePath": "/api/v1",
+        "securityDefinitions": {
+            "MehubAuth": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        },
+        "yaml": true,
+        "spec": {
+            "schemes": ["https"]
+        }
+    },
+    "routes": {
+        "basePath": "/api/v1",
+        "entryFile": "./src/server/apis/entry.ts",
+        "routesDir": "./src/server/apis",
+        "middleware": "express",
+        "authenticationModule": "./src/server/apis/authentication.ts"
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "restartable": "rs",
+    "ignore": [
+        ".git",
+        "app",
+        "node_modules/**/node_modules"
+    ],
+    "verbose": true,
+    "execMap": {
+        "js": "node",
+        "ts": "ts-node"
+    },
+    "events": {
+        "restart": "cls"
+    },
+    "watch": [
+        "server"
+    ],
+    "env": {
+        "NODE_ENV": "development"
+    },
+    "ext": "ts tsx js json",
+    "delay": "2500"
+}

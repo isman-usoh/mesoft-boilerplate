@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "baseUrl": "./src",
+        "outDir": "build-ts",
+        "jsx": "react",
+        "lib": [
+            "es6",
+            "es7",
+            "dom"
+        ],
+        "types": [
+            "node",
+            "reflect-metadata"
+        ],
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noImplicitUseStrict": true,
+        "noUnusedLocals": true
+    },
+    "include": [
+        "./src/**/*",
+        "./tests/**/*",
+        "./typings/index.d.ts"
+    ],
+    "exclude": [
+        "./node_modules"
+    ]
+}

@@ -1,0 +1,49 @@
+machine:
+  pre:
+    - mkdir ~/.yarn-cache
+  node:
+    version: 7.9
+  environment:
+    GCLOUD_PROJECT_NAME: mehub-asia
+    GCLOUD_CLUSTER_NAME: mesoft-cluster
+    GCLOUD_COMPUTE_ZONE: asia-southeast1-b
+    DEBIAN_FRONTEND: noninteractive
+    DOCKER_TAG: $(date +%Y-%m-%d).$CIRCLE_BUILD_NUM
+    MONGO_URL: mongodb://localhost:27017/circle_test
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+  services:
+    - docker
+
+dependencies:
+  cache_directories:
+    - ~/.yarn-cache
+  pre:
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update kubectl
+    - echo $G_SERVICE_ACCOUNT | base64 --decode -i > ${HOME}/account-auth.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/account-auth.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set project $GCLOUD_PROJECT_NAME
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set compute/zone ${GCLOUD_COMPUTE_ZONE}
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set container/use_client_certificate True
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set container/cluster ${GCLOUD_CLUSTER_NAME}
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet container clusters get-credentials ${GCLOUD_CLUSTER_NAME}
+  override:
+    - yarn install --ignore-scripts && npm rebuild node-sass
+    - yarn build
+  post:
+    - docker build -t meschool:latest --rm=false .
+test:
+  override:
+    - echo "Test"
+  post:
+    - docker run -d -p 3000:3000 meschool:latest; sleep 10
+    - curl --retry 10 --retry-delay 5 -v http://localhost:3000
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - docker tag meschool:latest asia.gcr.io/${GCLOUD_PROJECT_NAME}/meschool:${DOCKER_TAG}
+      - sudo /opt/google-cloud-sdk/bin/gcloud docker -- push asia.gcr.io/${GCLOUD_PROJECT_NAME}/meschool
+      - sudo chown -R ubuntu:ubuntu /home/ubuntu/.kube
+      - kubectl set image deployment/meschool meschool=asia.gcr.io/${GCLOUD_PROJECT_NAME}/meschool:${DOCKER_TAG} --namespace meschool
